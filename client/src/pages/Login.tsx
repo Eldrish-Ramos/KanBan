@@ -1,55 +1,34 @@
-import { useState, FormEvent, ChangeEvent } from "react";
-
+import React, { useState } from 'react';
+import { login } from '../api/authAPI';
 import Auth from '../utils/auth';
-import { login } from "../api/authAPI";
 
-const Login = () => {
-  const [loginData, setLoginData] = useState({
-    username: '',
-    password: ''
-  });
+const Login: React.FC = () => {
+  const [form, setForm] = useState({ username: '', password: '' });
+  const [error, setError] = useState('');
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setLoginData({
-      ...loginData,
-      [name]: value
-    });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     try {
-      const data = await login(loginData);
-      Auth.login(data.token);
-    } catch (err) {
-      console.error('Failed to login', err);
+      const { token } = await login(form);
+      Auth.login(token);
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 
   return (
-    <div className='container'>
-      <form className='form' onSubmit={handleSubmit}>
-        <h1>Login</h1>
-        <label >Username</label>
-        <input 
-          type='text'
-          name='username'
-          value={loginData.username || ''}
-          onChange={handleChange}
-        />
-      <label>Password</label>
-        <input 
-          type='password'
-          name='password'
-          value={loginData.password || ''}
-          onChange={handleChange}
-        />
-        <button type='submit'>Submit Form</button>
-      </form>
-    </div>
-    
-  )
+    <form onSubmit={handleSubmit}>
+      <input name="username" value={form.username} onChange={handleChange} placeholder="Username" />
+      <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Password" />
+      <button type="submit">Login</button>
+      {error && <div>{error}</div>}
+    </form>
+  );
 };
 
 export default Login;
