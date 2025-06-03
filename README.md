@@ -52,17 +52,12 @@ A full-stack Kanban board application with secure authentication using JSON Web 
      DB_PASSWORD='your_db_password'
      JWT_SECRET_KEY='your_super_secret_key'
      ```
-
-5. **Seed the database (optional):**
-   ```sh
-   npm run seed
-   ```
-
+     
 ### Running the App
 
-- **Development mode (with hot reload):**
+- **Development mode**
   ```sh
-  npm run start:dev
+  npm run dev
   ```
 
 - **Production build:**
